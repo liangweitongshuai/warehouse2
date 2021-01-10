@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <title>显示学生信息</title>
+    <style>
+        img{
+            width: 100px;
+            height: 100px;
+        }
+        table{
+            width: 70%;
+            margin:0 auto;
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        tr{
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        td{
+            border: 1px solid black;
+            border-collapse: collapse;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<h1 align="center">软件工程18级学生信息表</h1>
+<hr>
+<form action="liststudents.jsp" method="post">
+    请输入姓名: <input type="text" id="userName" name="userName">
+    <input type="submit" value="确定" id="submit" name="submit">
+</form>
+<hr>
+
+<table id="students">
+    <tr>
+        <td>学号</td>
+        <td>姓名</td>
+        <td>班级</td>
+        <td>性别</td>
+        <td>系部</td>
+        <td>电话</td>
+        <td>宿舍号</td>
+        <td>照片</td>
+        <td>操作</td>
+
+    </tr>
+</table>
+<script>
+    var tables=document.getElementById("students");
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status == 200) {
+                var students=JSON.parse(xhr.responseText);
+                for(var s of students){
+                    //创建行
+                    var tr=document.createElement("tr");
+                    //创建列
+                    for(index in s) {
+                        var td = document.createElement("td")
+                        //把studnt值赋值给列
+                        //把列加入的行
+                        if(index!="photoPath") {
+                            td.innerText = s[index]
+                            tr.append(td)
+                        }else{
+                            var img=document.createElement("img")
+                            img.src=s[index];
+                            td.append(img)
+                            tr.append(td)
+                        }
+                    }
+                    //增加操作td
+                    var option=document.createElement("td");
+                    option.innerHTML="<a href='#'>删除</a>&nbsp;<a href=''#'>更新</a>";
+                    tr.append(option)
+                    //把行追加到table中
+                    tables.append(tr)
+                }
+            }
+        }
+    };
+    xhr.open('POST', '/listStudents');
+    xhr.send();
+</script>
+</body>
+</html>
